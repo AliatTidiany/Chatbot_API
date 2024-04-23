@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+</head>
+<body>
+    <h1>Chatbot Interface</h1>
+    <textarea id="inputQuestion" placeholder="Posez votre question ici..."></textarea>
+    <button onclick="askQuestion()">Poser la question</button>
+    <div id="responseContainer"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function askQuestion() {
+            var question = $("#inputQuestion").val();
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8000/ask",  // Assurez-vous de mettre l'URL correcte
+                contentType: "application/json",
+                data: JSON.stringify({"question": question}),
+                success: function(response) {
+                    displayResponse(response);
+                },
+                error: function(error) {
+                    console.error("Erreur lors de la requête:", error);
+                }
+            });
+        }
+
+        function displayResponse(response) {
+            var responseHtml = "<p><strong>Réponse:</strong> " + response.response + "</p>" +
+                               "<p><strong>Confiance:</strong> " + response.confidence_score + "</p>" +
+                               "<p><strong>Tag:</strong> " + response.tag + "</p>";
+
+            $("#responseContainer").html(responseHtml);
+        }
+    </script>
+</body>
+</html>
